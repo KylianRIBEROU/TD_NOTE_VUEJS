@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3>{{ questionnaire.name }}</h3>
-		<Question v-for="question in questions" :key="question.id" :question="question"></Question>
+		<Question v-for="question in questions" :key="question.id" :question="question" @remove="deleteQuestion(question)"></Question>
 	</div>
 </template>
 
@@ -27,13 +27,25 @@
 	},
 	methods: {
 		async loadQuestions() {
-		try {
-			// requête pour obtenir les questions du questionnaire
-			const response = await axios.get(`http://localhost:5000/flaskapi/v1.0/questionnaires/${this.questionnaire.id}/questions`);
-			this.questions = response.data.questions;
-		} catch (error) {
-			console.error('Error loading questions:', error);
-		}
+			try {
+				// requête pour obtenir les questions du questionnaire
+				const response = await axios.get(`http://localhost:5000/flaskapi/v1.0/questionnaires/${this.questionnaire.id}/questions`);
+				this.questions = response.data.questions;
+			}
+			catch (error) {
+				console.error('Error loading questions:', error);
+			}
+		},
+		deleteQuestion(question){
+			console.log(question);
+			axios.delete(`http://localhost:5000/flaskapi/v1.0/questions/${question.id}`)
+			.then(response => {
+				this.questions = this.questions.filter(questionActuelle => questionActuelle.id !== question.id);
+				console.log('Question deleted : ', question.id);
+			})
+			.catch(error => {
+				console.error('Error deleting question : ', error);
+			});
 		}
 	}
 	}

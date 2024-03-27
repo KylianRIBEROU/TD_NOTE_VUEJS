@@ -1,6 +1,9 @@
 <template>
     <div>
-        <h4>{{ question.title }}</h4>
+        <div class="question-header">
+            <h4>{{ question.title }}</h4>
+            <button @click="deleteQuestion" class="delete-icon"><img src="../assets/trash.png" width="30" height="30"></button>
+        </div>
         <div v-if="question.question_type === 'questionsimple'">
             <label>
             <input type="radio" v-model="selectedAnswer" :value="question.first_answer"> {{ question.first_answer }}
@@ -30,31 +33,47 @@
     </div>
   </template>
   
-  <script>
-  export default {
-    props: ['question'],
-    data() {
-        return {
-            selectedAnswer: null,
-            reponseAffichee: '' // afficher la réponse
-        };
-    },
-    methods: {
-        repondre() {
-            if (this.selectedAnswer !== null) {
-                // Vérifie si une réponse a été sélectionnée
-                if (this.selectedAnswer.toLowerCase() === this.question.answer.toLowerCase()) {
-                    this.reponseAffichee = 'Bonne réponse';
+<script>
+    export default {
+        props: ['question'],
+        data() {
+            return {
+                selectedAnswer: null,
+                reponseAffichee: '' // afficher la réponse
+            };
+        },
+        methods: {
+            repondre() {
+                if (this.selectedAnswer !== null) {
+                    // Vérifie si une réponse a été sélectionnée
+                    if (this.selectedAnswer.toLowerCase() === this.question.answer.toLowerCase()) {
+                        this.reponseAffichee = 'Bonne réponse';
+                    }
+                    else {
+                        this.reponseAffichee = 'Mauvaise réponse';
+                    }
                 }
                 else {
-                    this.reponseAffichee = 'Mauvaise réponse';
+                    this.reponseAffichee = 'Veuillez sélectionner une réponse';
                 }
+            },
+            deleteQuestion() {
+                console.log("DELETE enfant");
+                this.$emit('remove', {id:this.question.id});
             }
-            else {
-                this.reponseAffichee = 'Veuillez sélectionner une réponse';
-            }
-        }
+        },
+        emits : ["remove"]
+    };
+</script>
+<style scoped>
+    .question-header {
+        display: flex;
+        align-items: center;
     }
-  };
-  </script>
-  
+
+    .delete-icon {
+        margin-left: 10px;
+        cursor: pointer;
+        background-color: #fff;
+    }
+</style>
