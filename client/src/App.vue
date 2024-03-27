@@ -1,12 +1,9 @@
 <script>
 import axios from 'axios';
-import TodoItem from './components/TodoItem.vue'
+import Questionnaire from './components/Questionnaire.vue'
 
 let data = {
-  todos:[],
-  addModalVisible: false,
-  newTitle: "",
-  newDescription: ""
+  quizz:[]
 };
 
 export default {
@@ -14,101 +11,58 @@ export default {
     return data;
   },
   mounted() {
-    this.loadTasks();
+    this.loadQuizz();
   },
-  components: { TodoItem },
+  components: { Questionnaire },
   methods: {
-    async loadTasks() {
+    async loadQuizz() {
         try {
-            const response = await axios.get('http://localhost:5000/todo/api/v1.0/tasks');
-            this.todos = this.mapTasks(response.data.tasks);
+            const response = await axios.get('http://localhost:5000/flaskapi/v1.0/questionnaires');
+            this.quizz = this.mapQuizz(response.data.questionnaires);
         } catch (error) {
-            console.error('Error loading tasks:', error);
+            console.error('Error loading quizz : ', error);
         }
     },
-    mapTasks(tasks) {
-        return tasks.map(task => ({
-            title: task.title,
-            description: task.description,
-            checked: task.done,
-            uri: task.uri
+    mapQuizz(quizz) {
+        return quizz.map(questionnaire => ({
+            id: questionnaire.id,
+            name: questionnaire.name
         }));
-    },
-    editTodo(todo) {
-        console.log(todo.uri);
-        axios.put(todo.uri, {
-            title: todo.text,
-            description: todo.description,
-            done: todo.checked
-        })
-        .then(response => {
-            console.log(response);
-        })
-        .catch(error => {
-            console.error('Error updating task:', error);
-        });
-    },
-    removeItem(todo) {
-      console.log(todo);
-      axios.delete(todo.uri)
-      .then(response => {
-        this.todos = this.todos.filter(item => item.uri !== todo.uri);
-        console.log('Task deleted:', todo.uri);
-      })
-      .catch(error => {
-        console.error('Error deleting task:', error);
-      });
-    },
-    showAddTodo(){
-      this.addModalVisible = !this.addModalVisible;
-    },
-    addTodo(newTitle, newDescription) {
-      const newTask = {
-        title: newTitle,
-        description: newDescription,
-      };
-      axios.post('http://localhost:5000/todo/api/v1.0/tasks', newTask)
-        .then(response => {
-          const addedTask = response.data.task;
-          this.todos.push({
-            title: addedTask.title,
-            description: addedTask.description,
-            checked: addedTask.done,
-            uri: addedTask.uri
-          });
-          this.newTitle = '';
-          this.newDescription = '';
-          this.showAddTodo();
-        })
-        .catch(error => {
-          console.error('Error adding task:', error);
-        });
     }
   }
 }
 </script>
 
 <template>
-  <h2>Liste de taches</h2>
-  <TodoItem v-for="tache of todos" :todo="tache" :key="tache.id" @remove="removeItem(tache)" @edit="editTodo"></TodoItem>
-
-  <input type="button"
-    class="btn"
-    value="Ajouter une tâche"
-    @click="showAddTodo">
-  <div v-if="addModalVisible">
-    <input type="button" class="btn" value="Annuler" @click="showAddTodo">
-    <form @submit.prevent="addTodo(newTitle, newDescription)">
-      <label>New title</label>
-      <input type="text" v-model="newTitle" required>
-      <label>New description</label>
-      <input type="text" v-model="newDescription" required>
-      <input type="submit" value="Enregistrer">
-    </form>
+  <div class="container">
+    <!-- Partie gauche avec les questionnaires -->
+    <div class="left-pane">
+      <h1>Les quizz</h1>
+      <Questionnaire v-for="questionnaire of quizz" :questionnaire="questionnaire" :key="questionnaire.id"></Questionnaire>
+    </div>
+    
+    <!-- Partie droite pour l'ajout d'un questionnaire et d'une question -->
+    <div class="right-pane">
+      <h2>Ajouter un questionnaire</h2>
+      <!-- Ajoutez ici le formulaire pour ajouter un questionnaire -->
+      
+      <h2>Ajouter une question</h2>
+      <!-- Ajoutez ici le formulaire pour ajouter une question -->
+    </div>
   </div>
 </template>
-
 <style scoped>
+.container {
+  display: flex;
+}
+
+.left-pane {
+  flex: 1;
+}
+
+.right-pane {
+  flex: 1;
+}
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -120,5 +74,8 @@ export default {
 }
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
+}
+h1{
+  margin-bottom: 50px;
 }
 </style>
