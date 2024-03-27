@@ -3,10 +3,7 @@ import axios from 'axios';
 import Questionnaire from './components/Questionnaire.vue'
 
 let data = {
-  quizz:[],
-  addModalVisible: false,
-  newTitle: "",
-  newDescription: ""
+  quizz:[]
 };
 
 export default {
