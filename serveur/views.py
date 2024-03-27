@@ -36,11 +36,11 @@ def create_question():
         abort(409, "Aucun questionnaire n'existe avec cet id")
 
     if request.json["type"] == "question_simple":
-        question = QuestionSimple(request.json["title"], request.json["type"], request.json["questionnaire_id"], request.json["first_choix"], request.json["second_choix"])
+        question = QuestionSimple(request.json["title"], request.json["answer"], request.json["type"], request.json["questionnaire_id"], request.json["first_choix"], request.json["second_choix"])
         db.session.add(question)
         db.session.commit()
     elif request.json["type"] == "question_multiple":
-        question = QuestionMultiple(request.json["title"], request.json["type"], request.json["questionnaire_id"],
+        question = QuestionMultiple(request.json["title"], request.json["answer"], request.json["type"], request.json["questionnaire_id"],
                                      request.json["first_choix"], request.json["second_choix"], request.json["third_choix"], request.json["fourth_choix"])
         db.session.add(question)
         db.session.commit()
@@ -57,12 +57,12 @@ def update_question(question_id):
         abort(400)
     if "title" in request.json and type(request.json["title"]) != str:
         abort(400)
-    if "reponse" in request.json and type(request.json["reponse"]) is not str:
+    if "answer" in request.json and type(request.json["answer"]) is not str:
         abort(400)
     if "questionnaire_id" in request.json and type(request.json["questionnaire_id"]) is not int:
         abort(400)
     question.title = request.json.get("title", question.title)
-    question.reponse = request.json.get("reponse", question.reponse)
+    question.answer = request.json.get("answer", question.answer)
     question.questionnaire_id = request.json.get("questionnaire_id", question.questionnaire_id)
     db.session.commit()
     return jsonify(question.to_json())
@@ -144,17 +144,17 @@ def get_questions_by_questionnaire(questionnaire_id):
 
 
 
-# répondre à une question
-@app.route("/flaskapi/v1.0/questions/<int:question_id>/reponse", methods=["POST"])
-def repondre_question(question_id):
-    question = db.session.query(Question).get(question_id)
-    if question is None:
-        abort(404)
-    if not request.json or not "reponse" in request.json:
-        abort(400)
-    if question.reponse == request.json["reponse"]:
-        return jsonify({"result": True,
-                        "reponse": question.reponse})
-    else:
-        return jsonify({"result": False,
-                        "reponse": question.reponse})
+# # répondre à une question
+# @app.route("/flaskapi/v1.0/questions/<int:question_id>/reponse", methods=["POST"])
+# def repondre_question(question_id):
+#     question = db.session.query(Question).get(question_id)
+#     if question is None:
+#         abort(404)
+#     if not request.json or not "reponse" in request.json:
+#         abort(400)
+#     if question.reponse == request.json["reponse"]:
+#         return jsonify({"result": True,
+#                         "reponse": question.reponse})
+#     else:
+#         return jsonify({"result": False,
+#                         "reponse": question.reponse})
