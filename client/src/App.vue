@@ -1,6 +1,7 @@
 <script>
 import axios from 'axios';
-import Questionnaire from './components/Questionnaire.vue'
+import Questionnaire from './components/Questionnaire.vue';
+import AjoutQuestionnaire from './components/AjoutQuestionnaire.vue';
 
 let data = {
   quizz:[]
@@ -13,7 +14,7 @@ export default {
   mounted() {
     this.loadQuizz();
   },
-  components: { Questionnaire },
+  components: { Questionnaire, AjoutQuestionnaire },
   methods: {
     async loadQuizz() {
         try {
@@ -43,11 +44,7 @@ export default {
     
     <!-- Partie droite pour l'ajout d'un questionnaire et d'une question -->
     <div class="right-pane">
-      <h2>Ajouter un questionnaire</h2>
-      <!-- Ajoutez ici le formulaire pour ajouter un questionnaire -->
-      
-      <h2>Ajouter une question</h2>
-      <!-- Ajoutez ici le formulaire pour ajouter une question -->
+      <AjoutQuestionnaire></AjoutQuestionnaire>
     </div>
   </div>
 </template>
