@@ -58,7 +58,6 @@
                 }
             },
             deleteQuestion() {
-                console.log("DELETE enfant");
                 this.$emit('remove', {id:this.question.id});
             }
         },

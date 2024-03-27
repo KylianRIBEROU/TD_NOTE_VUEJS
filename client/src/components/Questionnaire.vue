@@ -1,6 +1,9 @@
 <template>
 	<div>
-		<h3>{{ questionnaire.name }}</h3>
+		<div class="questionnaire-header">
+            <h3>{{ questionnaire.name }}</h3>
+            <button @click="deleteQuestionnaire" class="delete-icon"><img src="../assets/trash.png" width="30" height="30">Supprimer</button>
+        </div>
 		<Question v-for="question in questions" :key="question.id" :question="question" @remove="deleteQuestion(question)"></Question>
 	</div>
 </template>
@@ -36,6 +39,9 @@
 				console.error('Error loading questions:', error);
 			}
 		},
+		deleteQuestionnaire(){
+			this.$emit('remove', {id: this.questionnaire.id})
+		},
 		deleteQuestion(question){
 			console.log(question);
 			axios.delete(`http://localhost:5000/flaskapi/v1.0/questions/${question.id}`)
@@ -46,12 +52,24 @@
 			.catch(error => {
 				console.error('Error deleting question : ', error);
 			});
-		}
+		},
+        emits : ["remove"]
 	}
 	}
 </script>  
 <style scoped>
-h3{
-	text-decoration: underline;
-}
+	h3{
+		text-decoration: underline;
+	}
+	.questionnaire-header {
+        display: flex;
+        align-items: center;
+    }
+
+    .delete-icon {
+        margin-left: 10px;
+        cursor: pointer;
+        background-color: #ff5000;
+		color: #000000;
+    }
 </style>
