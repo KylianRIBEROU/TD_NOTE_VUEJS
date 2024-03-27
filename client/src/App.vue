@@ -34,11 +34,35 @@ export default {
 </script>
 
 <template>
-  <h1>Les quizz</h1>
-  <Questionnaire v-for="questionnaire of quizz" :questionnaire="questionnaire" :key="questionnaire.id"></Questionnaire>
+  <div class="container">
+    <!-- Partie gauche avec les questionnaires -->
+    <div class="left-pane">
+      <h1>Les quizz</h1>
+      <Questionnaire v-for="questionnaire of quizz" :questionnaire="questionnaire" :key="questionnaire.id"></Questionnaire>
+    </div>
+    
+    <!-- Partie droite pour l'ajout d'un questionnaire et d'une question -->
+    <div class="right-pane">
+      <h2>Ajouter un questionnaire</h2>
+      <!-- Ajoutez ici le formulaire pour ajouter un questionnaire -->
+      
+      <h2>Ajouter une question</h2>
+      <!-- Ajoutez ici le formulaire pour ajouter une question -->
+    </div>
+  </div>
 </template>
-
 <style scoped>
+.container {
+  display: flex;
+}
+
+.left-pane {
+  flex: 1;
+}
+
+.right-pane {
+  flex: 1;
+}
 .logo {
   height: 6em;
   padding: 1.5em;
