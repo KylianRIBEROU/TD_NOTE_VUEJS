@@ -38,3 +38,8 @@
 	}
 	}
 </script>  
+<style scoped>
+h3{
+	text-decoration: underline;
+}
+</style>

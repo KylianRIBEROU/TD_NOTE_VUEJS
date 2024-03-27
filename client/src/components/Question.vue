@@ -43,4 +43,12 @@
         }
     };
 </script>
-  
+<style scoped>
+label{
+    margin-right: 50px;
+    margin-bottom: 10px;
+}
+button{
+    margin-bottom: 30px;
+}
+</style>
