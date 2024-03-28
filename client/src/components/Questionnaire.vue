@@ -42,6 +42,46 @@
 		deleteQuestionnaire(){
 			this.$emit('remove', {id: this.questionnaire.id})
 		},
+		updateQuestion(question){
+			console.log(question);
+			// Construire l'objet contenant les données à envoyer dans la requête PATCH
+			// const requestData = {
+			// 	title: question.editedTitle,
+			// 	answer: question.editedAnswer
+			// };
+
+			// // Ajouter les réponses en fonction du type de question
+			// if (question.question_type === 'questionsimple') {
+			// 	requestData.first_answer = question.editedFirstAnswer;
+			// 	requestData.second_answer = question.editedSecondAnswer;
+			// } else if (question.question_type === 'questionmultiple') {
+			// 	requestData.first_answer = question.editedFirstAnswer;
+			// 	requestData.second_answer = question.editedSecondAnswer;
+			// 	requestData.third_answer = question.editedThirdAnswer;
+			// 	requestData.fourth_answer = question.editedFourthAnswer;
+			// }
+
+			// // Envoyer la requête PATCH avec les données mises à jour
+			// axios.patch(`http://localhost:5000/flaskapi/v1.0/questions/${question.id}`, requestData)
+			// 	.then(response => {
+			// 		// Mise à jour locale des données de la question avec les données mises à jour
+			// 		const updatedQuestionIndex = this.questions.findIndex(questionActuelle => questionActuelle.id === question.id);
+			// 		if (updatedQuestionIndex !== -1) {
+			// 			if (question.question_type === 'questionmultiple') {
+			// 				this.questions[updatedQuestionIndex].third_answer = question.editedThirdAnswer;
+			// 				this.questions[updatedQuestionIndex].fourth_answer = question.editedFourthAnswer;
+			// 			}
+			// 			this.questions[updatedQuestionIndex].title = question.editedTitle;
+			// 			this.questions[updatedQuestionIndex].first_answer = question.editedFirstAnswer;
+			// 			this.questions[updatedQuestionIndex].second_answer = question.editedSecondAnswer;
+			// 			this.questions[updatedQuestionIndex].answer = question.editedAnswer;
+			// 		}
+			// 		console.log('Question updated: ', question.id);
+			// 	})
+			// 	.catch(error => {
+			// 		console.error('Error updating question : ', error);
+			// 	});
+		},
 		deleteQuestion(question){
 			console.log(question);
 			axios.delete(`http://localhost:5000/flaskapi/v1.0/questions/${question.id}`)

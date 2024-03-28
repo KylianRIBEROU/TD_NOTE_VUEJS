@@ -48,7 +48,26 @@ def create_question():
         abort(409)
     return jsonify(question.to_json()), 201
 
-@app.route("/flaskapi/v1.0/questions/<int:question_id>", methods=["PUT"])
+# @app.route("/flaskapi/v1.0/questions/<int:question_id>", methods=["PUT"])
+# def update_question(question_id):
+#     question = db.session.query(Question).get(question_id)
+#     if question is None:
+#         abort(404)
+#     if not request.json:
+#         abort(400)
+#     if "title" in request.json and type(request.json["title"]) != str:
+#         abort(400)
+#     if "answer" in request.json and type(request.json["answer"]) is not str:
+#         abort(400)
+#     if "questionnaire_id" in request.json and type(request.json["questionnaire_id"]) is not int:
+#         abort(400)
+#     question.title = request.json.get("title", question.title)
+#     question.answer = request.json.get("answer", question.answer)
+#     question.questionnaire_id = request.json.get("questionnaire_id", question.questionnaire_id)
+#     db.session.commit()
+#     return jsonify(question.to_json())
+
+@app.route("/flaskapi/v1.0/questions/<int:question_id>", methods=["PATCH"])
 def update_question(question_id):
     question = db.session.query(Question).get(question_id)
     if question is None:
@@ -59,11 +78,21 @@ def update_question(question_id):
         abort(400)
     if "answer" in request.json and type(request.json["answer"]) is not str:
         abort(400)
-    if "questionnaire_id" in request.json and type(request.json["questionnaire_id"]) is not int:
+    if "first_answer" in request.json and type(request.json["first_answer"]) is not str:
         abort(400)
+    if "second_answer" in request.json and type(request.json["first_answer"]) is not str:
+        abort(400)
+    if question.question_type == "questionmultiple":
+        if "third_answer" in request.json and type(request.json["third_answer"]) is not str:
+            abort(400)
+        if "fourth_answer" in request.json and type(request.json["fourth_answer"]) is not str:
+            abort(400)
+        question.third_answer = request.json.get("third_answer", question.third_answer)
+        question.fourth_answer = request.json.get("fourth_answer", question.fourth_answer)
     question.title = request.json.get("title", question.title)
     question.answer = request.json.get("answer", question.answer)
-    question.questionnaire_id = request.json.get("questionnaire_id", question.questionnaire_id)
+    question.first_answer = request.json.get("first_answer", question.first_answer)
+    question.second_answer = request.json.get("second_answer", question.second_answer)
     db.session.commit()
     return jsonify(question.to_json())
 
