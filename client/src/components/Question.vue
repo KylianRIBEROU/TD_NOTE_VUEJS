@@ -22,6 +22,10 @@
             <!-- Boutons pour annuler ou enregistrer les modifications -->
             <button @click="editQuestion">Annuler</button>
             <button @click="updateQuestion">Enregistrer</button>
+            <!-- Affichage de l'erreur si la bonne réponse n'existe pas parmi les réponses -->
+            <div v-if="erreurReponseManquante" class="alert alert-danger">
+                La bonne réponse n'existe pas parmi les réponses disponibles.
+            </div>
         </div>
         <!-- Contenu de la question -->
         <div v-else>
@@ -52,7 +56,7 @@
                     <input type="radio" v-model="selectedAnswer" :value="question.third_answer"> {{ question.third_answer }}
                 </label>
                 <label>
-                    <input type="radio" v-model="selectedAnswer" :value="question.four_answer"> {{ question.four_answer }}
+                    <input type="radio" v-model="selectedAnswer" :value="question.fourth_answer"> {{ question.fourth_answer }}
                 </label>
             </div>
             <!-- Bouton pour répondre à la question -->
@@ -80,7 +84,8 @@
                 editedSecondAnswer: '', // Deuxième réponse en cours de modification
                 editedThirdAnswer: '', // Troisième réponse en cours de modification
                 editedFourthAnswer: '', // Quatrième réponse en cours de modification
-                editedAnswer: '' // Réponse en cours de modification
+                editedAnswer: '', // Réponse en cours de modification
+                erreurReponseManquante: false
             };
         },
         methods: {
@@ -110,74 +115,52 @@
                 this.editedFourthAnswer = this.question.fourth_answer;
                 this.editedAnswer = this.question.answer;
                 this.isEditing = !this.isEditing; // Passe en mode édition ou non
+                if (this.erreurReponseManquante){
+                    this.erreurReponseManquante = false;
+                }
             },
             updateQuestion() {
 
 
                 // gérer que la nouvelle réponse n'existe pas dans les réponses
-                
-                
-                //if (this.editedAnswer != this.editedFirstAnswer && this.editedAnswer != this.editedSecondAnswer && this.editedAnswer != this.editedThirdAnswer && this.editedAnswer != this.editedFourthAnswer)
-
-
-                // maj en locale a faire
-
-
-
-
-
-
-
-
-
-                // Mise à jour de la question sur le serveur ici et non dans le parent car on n'arrive pas ç l'envoyer au parent
-                
-                // Construction de l'objet contenant les données à envoyer dans la requête PATCH (maj non complete de la resource)
-                const requestData = {
-                    title: this.editedTitle,
-                    answer: this.editedAnswer
-                };
-
-                // Ajouter les réponses en fonction du type de question
-                requestData.first_answer = this.editedFirstAnswer;
-                requestData.second_answer = this.editedSecondAnswer;
-                if (this.question.question_type === 'questionmultiple') {
-                    requestData.third_answer = this.editedThirdAnswer;
-                    requestData.fourth_answer = this.editedFourthAnswer;   
+                if (this.editedAnswer != this.editedFirstAnswer && this.editedAnswer != this.editedSecondAnswer && this.editedAnswer != this.editedThirdAnswer && this.editedAnswer != this.editedFourthAnswer){
+                    // afficher à l'utilisateur que la bonne réponse n'existe pas dans les réponses
+                    console.log("Bonne réponse n'existe pas dans les réponses");
+                    this.erreurReponseManquante = true;
                 }
+                else{
+                    // Mise à jour sur le serveur ici et non dans le parent car on n'arrive pas à l'envoyer au parent la questionUpdated
+                    
+                    // Construction de l'objet contenant les données à envoyer dans la requête PATCH (maj non complete de la resource)
+                    const requestData = {
+                        title: this.editedTitle,
+                        answer: this.editedAnswer
+                    };
 
-                // Envoyer la requête PATCH avec les données mises à jour
-                axios.patch(`http://localhost:5000/flaskapi/v1.0/questions/${this.question.id}`, requestData)
-                    .then(response => {
-                        // Mise à jour locale des données de la question avec les données mises à jour
+                    // Ajouter les réponses en fonction du type de question
+                    requestData.first_answer = this.editedFirstAnswer;
+                    requestData.second_answer = this.editedSecondAnswer;
+                    if (this.question.question_type === 'questionmultiple') {
+                        requestData.third_answer = this.editedThirdAnswer;
+                        requestData.fourth_answer = this.editedFourthAnswer;   
+                    }
 
-
-
-
-                        // const updatedQuestionIndex = this.questions.findIndex(questionActuelle => questionActuelle.id === question.id);
-                        // if (updatedQuestionIndex !== -1) {
-                        //     if (question.question_type === 'questionmultiple') {
-                        //         this.questions[updatedQuestionIndex].third_answer = question.editedThirdAnswer;
-                        //         this.questions[updatedQuestionIndex].fourth_answer = question.editedFourthAnswer;
-                        //     }
-                        //     this.questions[updatedQuestionIndex].title = question.editedTitle;
-                        //     this.questions[updatedQuestionIndex].first_answer = question.editedFirstAnswer;
-                        //     this.questions[updatedQuestionIndex].second_answer = question.editedSecondAnswer;
-                        //     this.questions[updatedQuestionIndex].answer = question.editedAnswer;
-                        // }
-
-
-
-
-                        console.log('Question updated: ', this.question.id);
-                    })
-                    .catch(error => {
-                        console.error('Error updating question : ', error);
-                    });
-                this.isEditing = false;
+                    // Envoyer la requête PATCH avec les données mises à jour
+                    axios.patch(`http://localhost:5000/flaskapi/v1.0/questions/${this.question.id}`, requestData)
+                        .then(response => {
+                            // Mise à jour locale des données de la question avec les données mises à jour
+                            this.$emit('update', {id: this.question.id});
+                            console.log('Question updated: ', this.question.id);
+                        })
+                        .catch(error => {
+                            console.error('Error updating question : ', error);
+                        });
+                    this.isEditing = false;
+                    this.erreurReponseManquante = false;
+                }
             }
         },
-        emits: ["remove"]
+        emits: ["remove", "update"]
     };
 </script>
   
