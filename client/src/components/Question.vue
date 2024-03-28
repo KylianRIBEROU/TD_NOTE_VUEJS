@@ -3,22 +3,22 @@
         <!-- Contenu pour la modification de la question -->
         <div v-if="isEditing">
             <!-- Ajoutez ici les champs pour la modification de la question -->
-            <input type="text" v-model="editedTitle" placeholder="Nouveau titre">
+            <input type="text" v-model="editedTitle" placeholder="Nouveau titre" class="input-large">
             <!-- Affichage des réponses en fonction du type de question -->
             <div v-if="question.question_type === 'questionsimple'">
                 <!-- Modification des réponses pour les questions simples -->
-                <input type="text" v-model="editedFirstAnswer" placeholder="Première réponse">
-                <input type="text" v-model="editedSecondAnswer" placeholder="Deuxième réponse">
+                <input type="text" v-model="editedFirstAnswer" placeholder="Première réponse" class="input-medium">
+                <input type="text" v-model="editedSecondAnswer" placeholder="Deuxième réponse" class="input-medium">
             </div>
             <div v-else-if="question.question_type === 'questionmultiple'">
                 <!-- Modification des réponses pour les questions multiples -->
-                <input type="text" v-model="editedFirstAnswer" placeholder="Première réponse">
-                <input type="text" v-model="editedSecondAnswer" placeholder="Deuxième réponse">
-                <input type="text" v-model="editedThirdAnswer" placeholder="Troisième réponse">
-                <input type="text" v-model="editedFourthAnswer" placeholder="Quatrième réponse">
+                <input type="text" v-model="editedFirstAnswer" placeholder="Première réponse"class="input-medium">
+                <input type="text" v-model="editedSecondAnswer" placeholder="Deuxième réponse" class="input-medium">
+                <input type="text" v-model="editedThirdAnswer" placeholder="Troisième réponse" class="input-medium">
+                <input type="text" v-model="editedFourthAnswer" placeholder="Quatrième réponse" class="input-medium">
             </div>
             <!-- Champ de modification pour la réponse -->
-            <input type="text" v-model="editedAnswer" placeholder="Bonne réponse">
+            <input type="text" v-model="editedAnswer" placeholder="Bonne réponse" class="input-medium">
             <!-- Boutons pour annuler ou enregistrer les modifications -->
             <button @click="editQuestion">Annuler</button>
             <button @click="updateQuestion">Enregistrer</button>
@@ -181,5 +181,13 @@
         cursor: pointer;
         background-color: #ff5000; /* Couleur de fond pour l'icône de modification */
         color: #ffffff; /* Couleur du texte pour l'icône de modification */
+    }
+
+    .input-large {
+        width: 100%;
+    }
+
+    .input-medium {
+        width: 50%;
     }
 </style>
