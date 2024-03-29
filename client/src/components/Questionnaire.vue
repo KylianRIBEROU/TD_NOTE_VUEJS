@@ -1,11 +1,15 @@
 <template>
-	<div>
-		<div class="questionnaire-header">
-            <h3>{{ questionnaire.name }}</h3>
-            <button @click="deleteQuestionnaire" class="delete-icon"><img src="../assets/trash.png" width="30" height="30">Supprimer</button>
+    <div>
+        <div class="questionnaire-header">
+            <h3 v-if="!isEditing">{{ questionnaire.name }}</h3>
+            <input v-model="editedQuestionnaireName" v-if="isEditing" placeholder="Nouveau nom">
+            <button v-if="!isEditing" @click="deleteQuestionnaire" class="delete-icon"><img src="../assets/trash.png" width="30" height="30">Supprimer</button>
+            <button v-if="!isEditing" @click="editQuestionnaire">Modifier</button>
+			<button v-if="isEditing" @click="editQuestionnaire">Annuler</button>
+            <button v-if="isEditing" @click="saveEditQuestionnaire">Enregistrer</button>
         </div>
-		<Question v-for="question in questions" :key="question.id" :question="question" @remove="deleteQuestion(question)" @update="updateQuestion(question)"></Question>
-	</div>
+        <Question v-for="question in questions" :key="question.id" :question="question" @remove="deleteQuestion(question)" @update="updateQuestion(question)"></Question>
+    </div>
 </template>
 
 <script>
@@ -21,7 +25,9 @@
 	},
 	data() {
 		return {
-		questions: []
+			questions: [],
+			editedQuestionnaireName: '',
+            isEditing: false
 		};
 	},
 	mounted() {
@@ -41,6 +47,21 @@
 		},
 		deleteQuestionnaire(){
 			this.$emit('remove', {id: this.questionnaire.id})
+		},
+		editQuestionnaire() {
+			this.editedQuestionnaireName = this.questionnaire.name;
+			this.isEditing = !this.isEditing;
+		},
+		async saveEditQuestionnaire() {
+			try {
+				// Mise à jour distante dans le serveur
+				await axios.put(`http://localhost:5000/flaskapi/v1.0/questionnaires/${this.questionnaire.id}`, { name: this.editedQuestionnaireName }); // put car on modifie la ressource entière
+				// Mise à jour locale dans le parent
+				this.$emit('update', {id : this.questionnaire.id})
+				this.isEditing = false;
+			} catch (error) {
+				console.error('Error updating questionnaire name:', error);
+			}
 		},
 		async updateQuestion(question){
 			// maj locale de la question
@@ -64,7 +85,7 @@
 				console.error('Error deleting question : ', error);
 			});
 		},
-        emits : ["remove"]
+        emits : ["remove", "update"]
 	}
 	}
 </script>  
