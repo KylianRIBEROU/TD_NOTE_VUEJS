@@ -5,12 +5,45 @@
             <input v-model="editedQuestionnaireName" v-if="isEditing" placeholder="Nouveau nom">
             <button v-if="!isEditing" @click="deleteQuestionnaire" class="delete-icon"><img src="../assets/trash.png" width="30" height="30">Supprimer</button>
             <button v-if="!isEditing" @click="editQuestionnaire">Modifier</button>
-			<button v-if="isEditing" @click="editQuestionnaire">Annuler</button>
+            <button v-if="isEditing" @click="editQuestionnaire">Annuler</button>
             <button v-if="isEditing" @click="saveEditQuestionnaire">Enregistrer</button>
         </div>
         <Question v-for="question in questions" :key="question.id" :question="question" @remove="deleteQuestion(question)" @update="updateQuestion(question)"></Question>
+        <div>
+            <button v-if="!showAddQuestion" class="btn-add-question" @click="showAddQuestionForm">Ajouter une question</button>
+            <!-- Formulaire d'ajout d'une question -->
+            <form v-if="showAddQuestion" @submit.prevent="addQuestion">
+                <!-- Titre de la question -->
+                <input type="text" v-model="newTitleQuestion" placeholder="Titre de la question" required>
+                <!-- Type de question (simple ou multiple) -->
+                <select v-model="newTypeQuestion" required>
+                    <option value="questionsimple">Question simple</option>
+                    <option value="questionmultiple">Question multiple</option>
+                </select>
+                <!-- Réponses (2 ou 4 inputs en fonction du type de question) -->
+                <div v-if="newTypeQuestion === 'questionsimple'">
+                    <input type="text" v-model="newFirstAnswer" placeholder="Première réponse" required>
+                    <input type="text" v-model="newSecondAnswer" placeholder="Deuxième réponse" required>
+                </div>
+                <div v-else-if="newTypeQuestion === 'questionmultiple'">
+                    <input type="text" v-model="newFirstAnswer" placeholder="Première réponse" required>
+                    <input type="text" v-model="newSecondAnswer" placeholder="Deuxième réponse" required>
+                    <input type="text" v-model="newThirdAnswer" placeholder="Troisième réponse" required>
+                    <input type="text" v-model="newFourthAnswer" placeholder="Quatrième réponse" required>
+                </div>
+                <!-- Bonne réponse -->
+                <input type="text" v-model="newCorrectAnswerQuestion" placeholder="Bonne réponse" required>
+                <button class="btn-add-question" @click="showAddQuestionForm">Annuler</button>
+                <button type="submit" class="btn-add-question">Ajouter</button>
+                <!-- Affichage de l'erreur si la bonne réponse n'existe pas parmi les réponses -->
+                <div v-if="erreurReponseManquante" class="alert alert-danger">
+                    La bonne réponse n'existe pas parmi les réponses disponibles.
+                </div>
+            </form>
+        </div>
     </div>
 </template>
+
 
 <script>
 	import axios from 'axios';
@@ -27,7 +60,16 @@
 		return {
 			questions: [],
 			editedQuestionnaireName: '',
-            isEditing: false
+            isEditing: false,
+			showAddQuestion: false,
+			newTitleQuestion: '',
+			newTypeQuestion: 'questionsimple',
+			newFirstAnswer: '',
+			newSecondAnswer: '',
+			newThirdAnswer: '',
+			newFourthAnswer: '',
+			newCorrectAnswerQuestion: '',
+			erreurReponseManquante: false
 		};
 	},
 	mounted() {
@@ -85,6 +127,36 @@
 				console.error('Error deleting question : ', error);
 			});
 		},
+		showAddQuestionForm() {
+			this.showAddQuestion = !this.showAddQuestion;
+		},
+		addQuestion() {
+			// gérer que la nouvelle réponse n'existe pas dans les réponses
+			if (this.newCorrectAnswerQuestion != this.newFirstAnswer && this.newCorrectAnswerQuestion != this.newSecondAnswer && this.newCorrectAnswerQuestion != this.newThirdAnswer && this.newCorrectAnswerQuestion != this.newFourthAnswer){
+				// afficher à l'utilisateur que la bonne réponse n'existe pas dans les réponses
+				console.log("Bonne réponse n'existe pas dans les réponses");
+				this.erreurReponseManquante = true;
+            }
+			else{
+				// Ajout de la nouvelle question sur le serveur
+				console.log("Question ajoutée en distant et local")
+				// Ajout de la nouvelle question en local
+
+				// Réinitialise le formulaire
+				this.resetAddQuestionForm();
+			}
+		},
+		resetAddQuestionForm() {
+			this.showAddQuestion = false;
+			this.newTitleQuestion = '';
+			this.newTypeQuestion = 'questionsimple';
+			this.newFirstAnswer = '';
+			this.newSecondAnswer = '';
+			this.newThirdAnswer = '';
+			this.newFourthAnswer = '';
+			this.newCorrectAnswerQuestion = '';
+			this.erreurReponseManquante = false;
+		},
         emits : ["remove", "update"]
 	}
 	}
@@ -104,4 +176,8 @@
         background-color: #ff5000;
 		color: #000000;
     }
+
+	.btn-add-question{
+		background-color: #001f3f;
+	}
 </style>
