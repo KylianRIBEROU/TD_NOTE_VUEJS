@@ -2,11 +2,13 @@
     <div>
         <div class="questionnaire-header">
             <h3 v-if="!isEditing">{{ questionnaire.name }}</h3>
-            <input v-model="editedQuestionnaireName" v-if="isEditing" placeholder="Nouveau nom">
             <button v-if="!isEditing" @click="deleteQuestionnaire" class="delete-icon"><img src="../assets/trash.png" width="30" height="30">Supprimer</button>
             <button v-if="!isEditing" @click="editQuestionnaire">Modifier</button>
-            <button v-if="isEditing" @click="editQuestionnaire">Annuler</button>
-            <button v-if="isEditing" @click="saveEditQuestionnaire">Enregistrer</button>
+			<form v-if="isEditing" @submit.prevent="saveEditQuestionnaire">
+                <input v-model="editedQuestionnaireName" placeholder="Nouveau nom" required>
+				<button type="button" @click="editQuestionnaire">Annuler</button>
+                <button type="submit">Enregistrer</button>
+            </form>
         </div>
         <Question v-for="question in questions" :key="question.id" :question="question" @remove="deleteQuestion(question)" @update="updateQuestion(question)"></Question>
         <div>
