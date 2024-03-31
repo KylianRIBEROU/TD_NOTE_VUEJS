@@ -90,7 +90,7 @@
 			}
 		},
 		deleteQuestionnaire(){
-			this.$emit('remove', {id: this.questionnaire.id})
+			this.$emit('remove', {id: this.questionnaire.id});
 		},
 		editQuestionnaire() {
 			this.editedQuestionnaireName = this.questionnaire.name;
@@ -101,7 +101,7 @@
 				// Mise à jour distante dans le serveur
 				await axios.put(`http://localhost:5000/flaskapi/v1.0/questionnaires/${this.questionnaire.id}`, { name: this.editedQuestionnaireName }); // put car on modifie la ressource entière
 				// Mise à jour locale dans le parent
-				this.$emit('update', {id : this.questionnaire.id})
+				this.$emit('update', {id : this.questionnaire.id});
 				this.isEditing = false;
 			} catch (error) {
 				console.error('Error updating questionnaire name:', error);
@@ -140,9 +140,28 @@
 				this.erreurReponseManquante = true;
             }
 			else{
-				// Ajout de la nouvelle question sur le serveur
-				console.log("Question ajoutée en distant et local")
-				// Ajout de la nouvelle question en local
+				const newQuestionData = {
+					title: this.newTitleQuestion,
+					answer: this.newCorrectAnswerQuestion,
+					question_type: this.newTypeQuestion,
+					first_answer: this.newFirstAnswer,
+					second_answer: this.newSecondAnswer,
+					third_answer: this.newThirdAnswer,
+					fourth_answer: this.newFourthAnswer,
+					questionnaire_id: this.questionnaire.id
+				};
+
+				// Envoie une requête POST pour ajouter la nouvelle question au serveur
+				axios.post(`http://localhost:5000/flaskapi/v1.0/questionnaire/${this.questionnaire.id}/questions`, newQuestionData)
+					.then(response => {
+						// Ajoute la nouvelle question à la liste locale de questions
+						const newQuestion = response.data;
+						this.questions.push(newQuestion);
+						console.log('Question ajoutée avec succès : ', newQuestion);
+					})
+					.catch(error => {
+						console.error('Erreur lors de l\'ajout de la question : ', error);
+					});
 
 				// Réinitialise le formulaire
 				this.resetAddQuestionForm();

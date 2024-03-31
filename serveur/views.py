@@ -48,6 +48,26 @@ def create_question():
         abort(409)
     return jsonify(question.to_json()), 201
 
+@app.route("/flaskapi/v1.0/questionnaire/<int:questionnaire_id>/questions", methods=["POST"])
+def create_question_questionnaire(questionnaire_id):
+    if not request.json or not "title" in request.json or not "question_type" in request.json:
+        abort(400)
+    if not "questionnaire_id" in request.json:
+        abort(400)
+
+    if request.json["question_type"] == "questionsimple":
+        question = QuestionSimple(request.json["title"], request.json["answer"], request.json["question_type"], request.json["first_answer"], request.json["second_answer"], questionnaire_id)
+        db.session.add(question)
+        db.session.commit()
+    elif request.json["question_type"] == "questionmultiple":
+        question = QuestionMultiple(request.json["title"], request.json["answer"], request.json["question_type"],
+                                     request.json["first_answer"], request.json["second_answer"], request.json["third_answer"], request.json["fourth_answer"], questionnaire_id)
+        db.session.add(question)
+        db.session.commit()
+    else:
+        abort(409)
+    return jsonify(question.to_json()), 201
+
 # @app.route("/flaskapi/v1.0/questions/<int:question_id>", methods=["PUT"])
 # def update_question(question_id):
 #     question = db.session.query(Question).get(question_id)
