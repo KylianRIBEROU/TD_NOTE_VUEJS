@@ -39,12 +39,14 @@ def update_questionnaire(id_questionnaire, new_name):
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(120))
+    answer = db.Column(db.String(120))
     question_type = db.Column(db.String(12))
     questionnaire_id = db.Column(db.Integer, db.ForeignKey('questionnaire.id'))
     questionnaire = db.relationship("Questionnaire", backref = db.backref("questions", lazy="dynamic"))
 
-    def __init__ (self, title, question_type, questionnaire_id):
+    def __init__ (self, title, answer, question_type, questionnaire_id):
         self.title = title
+        self.answer = answer
         self.question_type = question_type
         self.questionnaire_id = questionnaire_id
     
@@ -58,6 +60,7 @@ class Question(db.Model):
         json={
             'id': self.id,
             'title': self.title,
+            'answer': self.answer,
             'question_type': self.question_type,
             'questionnaire_id': self.questionnaire_id,
         }
@@ -74,8 +77,8 @@ class QuestionSimple(Question):
         'with_polymorphic': '*'
     }
 
-    def __init__ (self, title, question_type, first_answer, second_answer, questionnaire_id):
-        super().__init__(title, question_type, questionnaire_id)
+    def __init__ (self, title, answer, question_type, first_answer, second_answer, questionnaire_id):
+        super().__init__(title, answer, question_type, questionnaire_id)
         self.first_answer = first_answer
         self.second_answer = second_answer
     
@@ -92,7 +95,7 @@ class QuestionMultiple(Question):
     first_answer = db.Column(db.String(120))
     second_answer = db.Column(db.String(120))
     third_answer = db.Column(db.String(120))
-    four_answer = db.Column(db.String(120))
+    fourth_answer = db.Column(db.String(120))
 
     __mapper_args__ = {
         'polymorphic_identity': 'questionmultiple',
@@ -100,12 +103,12 @@ class QuestionMultiple(Question):
         'with_polymorphic': '*'
     }
 
-    def __init__ (self, title, question_type, first_answer, second_answer, third_answer, four_answer, questionnaire_id):
-        super().__init__(title, question_type, questionnaire_id)
+    def __init__ (self, title, answer, question_type, first_answer, second_answer, third_answer, fourth_answer, questionnaire_id):
+        super().__init__(title, answer, question_type, questionnaire_id)
         self.first_answer = first_answer
         self.second_answer = second_answer
         self.third_answer = third_answer
-        self.four_answer = four_answer
+        self.fourth_answer = fourth_answer
     
     def to_json(self):
         json = super().to_json()
@@ -113,6 +116,6 @@ class QuestionMultiple(Question):
             'first_answer': self.first_answer,
             'second_answer': self.second_answer,
             'third_answer': self.third_answer,
-            'four_answer': self.four_answer,
+            'fourth_answer': self.fourth_answer,
         })
         return json
