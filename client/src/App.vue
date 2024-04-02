@@ -28,6 +28,28 @@ export default {
             id: questionnaire.id,
             name: questionnaire.name
         }));
+    },
+    deleteQuestionnaire(questionnaire){
+      console.log(questionnaire);
+			axios.delete(`http://localhost:5000/flaskapi/v1.0/questionnaires/${questionnaire.id}`)
+			.then(response => {
+				this.quizz = this.quizz.filter(questionnaireActuel => questionnaireActuel.id !== questionnaire.id);
+				console.log('questionnaire deleted : ', questionnaire.id);
+			})
+			.catch(error => {
+				console.error('Error deleting questionnaire : ', error);
+			});
+    },
+    async updateQuestionnaire(questionnaire) {
+      // maj locale du questionnaire
+			console.log(questionnaire);
+			const response = await axios.get(`http://localhost:5000/flaskapi/v1.0/questionnaires/${questionnaire.id}`);
+			const questionnaireUpdated = response.data;
+			console.log(questionnaireUpdated);
+			const updatedQuestionnaireIndex = this.quizz.findIndex(questionnaireActuel => questionnaireActuel.id === questionnaire.id);
+			if (updatedQuestionnaireIndex !== -1) {
+				this.quizz[updatedQuestionnaireIndex] = questionnaireUpdated;
+			}
     }
   }
 }
@@ -38,7 +60,7 @@ export default {
     <!-- Partie gauche avec les questionnaires -->
     <div class="left-pane">
       <h1>Les quizz</h1>
-      <Questionnaire v-for="questionnaire of quizz" :questionnaire="questionnaire" :key="questionnaire.id"></Questionnaire>
+      <Questionnaire v-for="questionnaire of quizz" :questionnaire="questionnaire" :key="questionnaire.id" @remove="deleteQuestionnaire(questionnaire)" @update="updateQuestionnaire(questionnaire)"></Questionnaire>
     </div>
     
     <!-- Partie droite pour l'ajout d'un questionnaire et d'une question -->
