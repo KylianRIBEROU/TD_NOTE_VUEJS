@@ -89,22 +89,27 @@ export default {
         return;
       }
 
+
+      console.log(this.questions);
+      console.log(this.questions[0].choices[0]);
       const questionnaireData = {
         name: this.nomQuestionnaire,
         questions: this.questions.map(question => {
           return {
             title: question.label,
             type: question.choices.length === 2 ? "question_simple" : "question_multiple",
-            // Supposons que la première réponse soit toujours la bonne réponse
-            answer: 0,
-            // Supposons également que les choix soient toujours dans l'ordre
-            first_choice: question.choices[0],
-            second_choice: question.choices[1],
-            third_choice: question.choices[2] || null,
-            fourth_choice: question.choices[3] || null
+            answer: question.choices[question.selectedChoice],
+            // string identique a la bonne réponse
+
+            first_answer: question.choices[0],
+            second_answer: question.choices[1],
+            third_answer: question.choices[2] || null,
+            fourth_answer: question.choices[3] || null
           };
         })
       };
+
+      console.log(questionnaireData);
 
       axios.post("http://localhost:5000/flaskapi/v1.0/questionnairequestions", questionnaireData)
         .then(response => {

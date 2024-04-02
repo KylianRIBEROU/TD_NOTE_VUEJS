@@ -36,12 +36,12 @@ def create_question():
         abort(409, "Aucun questionnaire n'existe avec cet id")
 
     if request.json["type"] == "question_simple":
-        question = QuestionSimple(request.json["title"], request.json["answer"], request.json["type"], request.json["questionnaire_id"], request.json["first_choix"], request.json["second_choix"])
+        question = QuestionSimple(request.json["title"], request.json["answer"], request.json["type"], request.json["questionnaire_id"], request.json["first_answer"], request.json["second_answer"])
         db.session.add(question)
         db.session.commit()
     elif request.json["type"] == "question_multiple":
         question = QuestionMultiple(request.json["title"], request.json["answer"], request.json["type"], request.json["questionnaire_id"],
-                                     request.json["first_choix"], request.json["second_choix"], request.json["third_choix"], request.json["fourth_choix"])
+                                     request.json["first_answer"], request.json["second_answer"], request.json["third_answer"], request.json["fourth_answer"])
         db.session.add(question)
         db.session.commit()
     else:
@@ -231,10 +231,10 @@ def creer_questionnaire_et_questions():
 
         # Ajouter la question au questionnaire en fonction de son type
         if q["type"] == "question_simple":
-            question = QuestionSimple(q["title"], q["answer"], q["type"], questionnaire.id, q["first_choice"], q["second_choice"])
+            question = QuestionSimple(q["title"], q["answer"], q["type"], questionnaire.id, q["first_answer"], q["second_answer"])
         elif q["type"] == "question_multiple":
             question = QuestionMultiple(q["title"], q["answer"], q["type"], questionnaire.id,
-                                        q["first_choice"], q["second_choice"], q["third_choice"], q["fourth_choice"])
+                                        q["first_answer"], q["second_answer"], q["third_answer"], q["fourth_answer"])
         else:
             abort(400)  # Type de question non pris en charge
 
