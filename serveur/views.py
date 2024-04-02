@@ -207,3 +207,40 @@ def get_questions_by_questionnaire(questionnaire_id):
 #     else:
 #         return jsonify({"result": False,
 #                         "reponse": question.reponse})
+
+
+@app.route("/flaskapi/v1.0/questionnairequestions", methods=["POST"])
+def creer_questionnaire_et_questions():
+    if not request.json or not "name" in request.json or not "questions" in request.json:
+        abort(400)
+
+    print("a")
+    # Créer un nouveau questionnaire
+    questionnaire = Questionnaire(request.json["name"])
+    db.session.add(questionnaire)
+    db.session.commit()
+
+    # Récupérer le questionnaire fraîchement ajouté pour obtenir son ID
+    questionnaire = db.session.query(Questionnaire).filter(Questionnaire.name == request.json["name"]).first()
+
+    # Parcourir toutes les questions envoyées par le client
+    for q in request.json["questions"]:
+        # Vérifier si les données de chaque question sont complètes
+        if not "title" in q or not "type" in q:
+            abort(400)
+
+        # Ajouter la question au questionnaire en fonction de son type
+        if q["type"] == "question_simple":
+            question = QuestionSimple(q["title"], q["answer"], q["type"], questionnaire.id, q["first_choice"], q["second_choice"])
+        elif q["type"] == "question_multiple":
+            question = QuestionMultiple(q["title"], q["answer"], q["type"], questionnaire.id,
+                                        q["first_choice"], q["second_choice"], q["third_choice"], q["fourth_choice"])
+        else:
+            abort(400)  # Type de question non pris en charge
+
+        # Ajouter la question à la base de données
+        db.session.add(question)
+        db.session.commit()
+
+    # Retourner les données JSON du questionnaire créé avec un code de statut 201 (Created)
+    return jsonify(questionnaire.to_json()), 201
