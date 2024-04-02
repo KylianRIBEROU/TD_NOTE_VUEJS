@@ -56,5 +56,3 @@ npm run dev --host
 #
 
 BOURREAU Quentin / RIBEROU Kylian - BUT informatique 2.3.B
-
-## Accéder à la documentation du serveur
