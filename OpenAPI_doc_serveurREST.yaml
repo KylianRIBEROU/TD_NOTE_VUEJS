@@ -1,0 +1,277 @@
+info:
+  title: Documentation de l'API Flask
+  description: Documentation de l'API Flask pour la gestion des questionnaires et des questions
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+paths:
+  /flaskapi/v1.0/questionnaires:
+    get:
+      summary: Récupérer tous les questionnaires
+      responses:
+        '200':
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  questionnaires:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Questionnaire'
+    post:
+      summary: Créer un nouveau questionnaire
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewQuestionnaire'
+      responses:
+        '201':
+          description: Questionnaire créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Questionnaire'
+  /flaskapi/v1.0/questionnaires/{questionnaire_id}:
+    get:
+      summary: Récupérer un questionnaire par ID
+      parameters:
+        - in: path
+          name: questionnaire_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Questionnaire'
+    put:
+      summary: Mettre à jour un questionnaire existant
+      parameters:
+        - in: path
+          name: questionnaire_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateQuestionnaire'
+      responses:
+        '200':
+          description: Questionnaire mis à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Questionnaire'
+    delete:
+      summary: Supprimer un questionnaire existant
+      parameters:
+        - in: path
+          name: questionnaire_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+  /flaskapi/v1.0/questionnaires/{questionnaire_id}/questions:
+    get:
+      summary: Récupérer toutes les questions d'un questionnaire par ID
+      parameters:
+        - in: path
+          name: questionnaire_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  questions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Question'
+  /flaskapi/v1.0/questions:
+    get:
+      summary: Récupérer toutes les questions
+      responses:
+        '200':
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  questions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Question'
+    post:
+      summary: Créer une nouvelle question
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewQuestion'
+      responses:
+        '201':
+          description: Question créée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+  /flaskapi/v1.0/questions/{question_id}:
+    get:
+      summary: Récupérer une question par ID
+      parameters:
+        - in: path
+          name: question_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+    patch:
+      summary: Mettre à jour une question existante
+      parameters:
+        - in: path
+          name: question_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateQuestion'
+      responses:
+        '200':
+          description: Question mise à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+    delete:
+      summary: Supprimer une question existante
+      parameters:
+        - in: path
+          name: question_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+  /flaskapi/v1.0/questions/questionnaire/{questionnaire_id}:
+    delete:
+      summary: Supprimer toutes les questions d'un questionnaire
+      parameters:
+        - in: path
+          name: questionnaire_id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+components:
+  schemas:
+    Questionnaire:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+      required:
+        - name
+    NewQuestionnaire:
+      type: object
+      properties:
+        name:
+          type: string
+    UpdateQuestionnaire:
+      type: object
+      properties:
+        name:
+          type: string
+    Question:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        answer:
+          type: string
+        question_type:
+          type: string
+        first_answer:
+          type: string
+        second_answer:
+          type: string
+        third_answer:
+          type: string
+        fourth_answer:
+          type: string
+        questionnaire_id:
+          type: integer
+          format: int64
+      required:
+        - title
+        - answer
+        - question_type
+        - first_answer
+        - second_answer
+        - questionnaire_id

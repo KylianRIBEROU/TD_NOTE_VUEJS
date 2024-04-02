@@ -26,8 +26,20 @@ Pour lancer notre projet, vous devez respecter ces commandes dans l'ordre suivan
 
 ### Lancement du serveur
 
+Pour lancer le serveur, il faut avoir les dépendances et librairies python requises.
+
+Vous pouvez donc lancer un environnement virtuel.
+
+```
+a
+```
+
+Ensuite vous l'activez : `source .env/bin/activate` ou `source .env/Scripts/activate` sur windows
+
+Enfin vous pouvez installer les dépendances : `pip install -r serveur/requirements.txt`
+
 1. Déplacer vous à la racine du projet.
-2. Lancer le serveur avec la commande suivante dans un terminal (pas dans VS Code) :
+2. Lancer le serveur avec la commande suivante dans un terminal (pas dans un IDE) :
 ```bash
 flask run
 ```
@@ -44,3 +56,5 @@ npm run dev --host
 #
 
 BOURREAU Quentin / RIBEROU Kylian - BUT informatique 2.3.B
+
+## Accéder à la documentation du serveur

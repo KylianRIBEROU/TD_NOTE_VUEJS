@@ -68,25 +68,6 @@ def create_question_questionnaire(questionnaire_id):
         abort(409)
     return jsonify(question.to_json()), 201
 
-# @app.route("/flaskapi/v1.0/questions/<int:question_id>", methods=["PUT"])
-# def update_question(question_id):
-#     question = db.session.query(Question).get(question_id)
-#     if question is None:
-#         abort(404)
-#     if not request.json:
-#         abort(400)
-#     if "title" in request.json and type(request.json["title"]) != str:
-#         abort(400)
-#     if "answer" in request.json and type(request.json["answer"]) is not str:
-#         abort(400)
-#     if "questionnaire_id" in request.json and type(request.json["questionnaire_id"]) is not int:
-#         abort(400)
-#     question.title = request.json.get("title", question.title)
-#     question.answer = request.json.get("answer", question.answer)
-#     question.questionnaire_id = request.json.get("questionnaire_id", question.questionnaire_id)
-#     db.session.commit()
-#     return jsonify(question.to_json())
-
 @app.route("/flaskapi/v1.0/questions/<int:question_id>", methods=["PATCH"])
 def update_question(question_id):
     question = db.session.query(Question).get(question_id)
@@ -192,44 +173,21 @@ def get_questions_by_questionnaire(questionnaire_id):
     return jsonify(questions=[q.to_json() for q in questions])
 
 
-
-# # répondre à une question
-# @app.route("/flaskapi/v1.0/questions/<int:question_id>/reponse", methods=["POST"])
-# def repondre_question(question_id):
-#     question = db.session.query(Question).get(question_id)
-#     if question is None:
-#         abort(404)
-#     if not request.json or not "reponse" in request.json:
-#         abort(400)
-#     if question.reponse == request.json["reponse"]:
-#         return jsonify({"result": True,
-#                         "reponse": question.reponse})
-#     else:
-#         return jsonify({"result": False,
-#                         "reponse": question.reponse})
-
-
 @app.route("/flaskapi/v1.0/questionnairequestions", methods=["POST"])
 def creer_questionnaire_et_questions():
     if not request.json or not "name" in request.json or not "questions" in request.json:
         abort(400)
 
-    print("a")
-    # Créer un nouveau questionnaire
     questionnaire = Questionnaire(request.json["name"])
     db.session.add(questionnaire)
     db.session.commit()
 
-    # Récupérer le questionnaire fraîchement ajouté pour obtenir son ID
     questionnaire = db.session.query(Questionnaire).filter(Questionnaire.name == request.json["name"]).first()
 
-    # Parcourir toutes les questions envoyées par le client
     for q in request.json["questions"]:
-        # Vérifier si les données de chaque question sont complètes
         if not "title" in q or not "type" in q:
             abort(400)
 
-        # Ajouter la question au questionnaire en fonction de son type
         if q["type"] == "questionsimple":
             question = QuestionSimple(q["title"], q["answer"], q["type"], q["first_answer"], q["second_answer"],  questionnaire.id)
         elif q["type"] == "questionmultiple":
@@ -238,9 +196,7 @@ def creer_questionnaire_et_questions():
         else:
             abort(400)  # Type de question non pris efFn charge
 
-        # Ajouter la question à la base de données
         db.session.add(question)
         db.session.commit()
 
-    # Retourner les données JSON du questionnaire créé avec un code de statut 201 (Created)
     return jsonify(questionnaire.to_json()), 201
