@@ -230,13 +230,13 @@ def creer_questionnaire_et_questions():
             abort(400)
 
         # Ajouter la question au questionnaire en fonction de son type
-        if q["type"] == "question_simple":
-            question = QuestionSimple(q["title"], q["answer"], q["type"], questionnaire.id, q["first_answer"], q["second_answer"])
-        elif q["type"] == "question_multiple":
-            question = QuestionMultiple(q["title"], q["answer"], q["type"], questionnaire.id,
-                                        q["first_answer"], q["second_answer"], q["third_answer"], q["fourth_answer"])
+        if q["type"] == "questionsimple":
+            question = QuestionSimple(q["title"], q["answer"], q["type"], q["first_answer"], q["second_answer"],  questionnaire.id)
+        elif q["type"] == "questionmultiple":
+            question = QuestionMultiple(q["title"], q["answer"], q["type"],
+                                        q["first_answer"], q["second_answer"], q["third_answer"], q["fourth_answer"],  questionnaire.id,)
         else:
-            abort(400)  # Type de question non pris en charge
+            abort(400)  # Type de question non pris efFn charge
 
         # Ajouter la question à la base de données
         db.session.add(question)

@@ -10,7 +10,7 @@
                 <button type="submit">Enregistrer</button>
             </form>
         </div>
-        <Question v-for="question in questions" :key="question.id" :question="question" @remove="deleteQuestion(question)" @update="updateQuestion(question)"></Question>
+        <Question v-for="question in questions" :key="question.id" :question="question" @remove="deleteQuestion(question)" @update="updateQuestion(question)" class="conteneur-question"></Question>
         <div>
             <button v-if="!showAddQuestion" class="btn-add-question" @click="showAddQuestionForm">Ajouter une question</button>
             <!-- Formulaire d'ajout d'une question -->

@@ -5,7 +5,6 @@
     <label for="labelQuestionnaire" class="label">Nom du questionnaire :</label>
     <input type="text" id="labelQuestionnaire" v-model="nomQuestionnaire" class="input">
 
-    <!-- Affichage des questions déjà créées -->
     <div v-for="(question, index) in questions" :key="index" class="question">
       <span>{{ question.label }} : </span>
       <span v-for="(choice, cIndex) in question.choices" :key="cIndex">
@@ -15,10 +14,8 @@
       <i class="fas fa-times delete-icon" @click="deleteQuestion(index)"></i>
     </div>
 
-    <!-- Bouton "Ajouter une question" -->
     <button class="add-question-btn" @click="toggleAddQuestion">Ajouter une question</button>
 
-    <!-- Div pour ajouter une nouvelle question -->
     <div v-if="showAddQuestion" class="add-question-container">
       <label for="questionType"></label>
       <div class="radio-options">
@@ -49,11 +46,9 @@
         <input type="text" id="choice4" v-model="choice4" class="input">
       </div>
 
-      <!-- Bouton "Créer" pour ajouter la question -->
       <button class="create-question-btn" @click="addQuestion">ajouter la question</button>
     </div>
 
-    <!-- Bouton "Créer" -->
     <button class="create-btn" @click="createQuestionnaire">Créer le questionnaire</button>
   </div>
 </template>
@@ -72,8 +67,8 @@ export default {
       choice2: '',
       choice3: '',
       choice4: '',
-      questions: [], // Liste des questions déjà créées
-      showAddQuestion: false // Contrôle l'affichage de la div pour ajouter une nouvelle question
+      questions: [],
+      showAddQuestion: false 
     };
   },
   
@@ -89,6 +84,7 @@ export default {
         return;
       }
 
+      console.log("a");
 
       console.log(this.questions);
       console.log(this.questions[0].choices[0]);
@@ -97,9 +93,8 @@ export default {
         questions: this.questions.map(question => {
           return {
             title: question.label,
-            type: question.choices.length === 2 ? "question_simple" : "question_multiple",
+            type: question.choices.length === 2 ? "questionsimple" : "questionmultiple",
             answer: question.choices[question.selectedChoice],
-            // string identique a la bonne réponse
 
             first_answer: question.choices[0],
             second_answer: question.choices[1],
@@ -116,8 +111,16 @@ export default {
           console.log(response.data);
           console.log("Questionnaire créé avec succès !");
           this.resetFields();
-          // Redirection ou autres actions après la création réussie
-        })
+          this.resetChampsQuestionnaire();
+
+
+          const newQuestionnaire = {
+           id: response.data.id, 
+          name: response.data.name,
+          };
+
+          this.$emit('new-questionnaire', newQuestionnaire); 
+                  })
         .catch(error => {
           console.error(error);
         });
@@ -138,11 +141,10 @@ export default {
         alert("Veuillez entrer un libellé pour la question.");
         return;
       }
-      // Construire la question en fonction du type choisi
       let newQuestion = {
         label: this.questionLabel,
-        choices: [this.choice1, this.choice2, this.choice3, this.choice4].filter(choice => choice.trim() !== ''), // Filtrer les choix vides
-        selectedChoice: null // Initialiser la réponse sélectionnée à null
+        choices: [this.choice1, this.choice2, this.choice3, this.choice4].filter(choice => choice.trim() !== ''),
+        selectedChoice: null 
       };
       this.questions.push(newQuestion);
       this.resetFields();
@@ -158,6 +160,11 @@ export default {
       this.choice2 = '';
       this.choice3 = '';
       this.choice4 = '';
+    },
+
+    resetChampsQuestionnaire(){
+      this.nomQuestionnaire = '';
+      this.questions = [];
     }
   }
 };
@@ -166,9 +173,9 @@ export default {
 <style scoped>
 
 .delete-icon {
-  margin-left: 10px; /* Ajout de marge entre la question et l'icône de croix */
+  margin-left: 10px; 
   cursor: pointer;
-  color: red; /* Couleur de l'icône de croix */
+  color: red;
 }
 
   .ajout-questionnaire {

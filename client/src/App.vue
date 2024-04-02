@@ -51,6 +51,9 @@ export default {
 			if (updatedQuestionnaireIndex !== -1) {
 				this.quizz[updatedQuestionnaireIndex] = questionnaireUpdated;
 			}
+    },
+    addNewQuestionnaire(newQuestionnaire) {
+      this.quizz.push(newQuestionnaire);
     }
   }
 }
@@ -61,12 +64,12 @@ export default {
     <!-- Partie gauche avec les questionnaires -->
     <div class="left-pane">
       <h1>Les quizz</h1>
-      <Questionnaire v-for="questionnaire of quizz" :questionnaire="questionnaire" :key="questionnaire.id" @remove="deleteQuestionnaire(questionnaire)" @update="updateQuestionnaire(questionnaire)"></Questionnaire>
+      <Questionnaire v-for="questionnaire of quizz" :questionnaire="questionnaire" :key="questionnaire.id" @remove="deleteQuestionnaire(questionnaire)" @update="updateQuestionnaire(questionnaire)" class="conteneur-questionnaire"></Questionnaire>
     </div>
     
     <!-- Partie droite pour l'ajout d'un questionnaire et d'une question -->
     <div class="right-pane">
-      <AjoutQuestionnaire></AjoutQuestionnaire>
+      <AjoutQuestionnaire @new-questionnaire="addNewQuestionnaire"></AjoutQuestionnaire>
     </div>
   </div>
 </template>
