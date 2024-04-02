@@ -5,24 +5,32 @@
             <!-- Formulaire pour la modification de la question -->
             <form @submit.prevent="updateQuestion">
                 <!-- Ajoutez ici les champs pour la modification de la question -->
+                <label>Titre de la question</label>
                 <input type="text" v-model="editedTitle" placeholder="Nouveau titre" class="input-large" required>
                 <!-- Affichage des réponses en fonction du type de question -->
-                <div v-if="question.question_type === 'questionsimple'">
+                <div v-if="question.question_type === 'questionsimple'" class="div-choix">
                     <!-- Modification des réponses pour les questions simples -->
+                    <label>1er choix</label>
                     <input type="text" v-model="editedFirstAnswer" placeholder="Première réponse" class="input-medium" required>
+                    <label>2ème choix</label>
                     <input type="text" v-model="editedSecondAnswer" placeholder="Deuxième réponse" class="input-medium" required>
                 </div>
-                <div v-else-if="question.question_type === 'questionmultiple'">
+                <div v-else-if="question.question_type === 'questionmultiple'" class="div-choix">
                     <!-- Modification des réponses pour les questions multiples -->
+                    <label>1er choix</label>
                     <input type="text" v-model="editedFirstAnswer" placeholder="Première réponse" class="input-medium" required>
+                    <label>2ème choix</label>
                     <input type="text" v-model="editedSecondAnswer" placeholder="Deuxième réponse" class="input-medium" required>
+                    <label>3ème choix</label>
                     <input type="text" v-model="editedThirdAnswer" placeholder="Troisième réponse" class="input-medium" required>
+                    <label>4ème choix</label>
                     <input type="text" v-model="editedFourthAnswer" placeholder="Quatrième réponse" class="input-medium" required>
                 </div>
                 <!-- Champ de modification pour la réponse -->
+                <label>Bonne réponse</label>
                 <input type="text" v-model="editedAnswer" placeholder="Bonne réponse" class="input-medium" required>
                 <!-- Boutons pour annuler ou enregistrer les modifications -->
-                <button @click="editQuestion">Annuler</button>
+                <button style="background-color: red" @click="editQuestion">Annuler</button>
                 <button type="submit">Enregistrer</button>
                 <!-- Affichage de l'erreur si la bonne réponse n'existe pas parmi les réponses -->
                 <div v-if="erreurReponseManquante" class="alert alert-danger">
