@@ -16,6 +16,8 @@
 
 ## Notre projet
 
+Voici le lien vers notre GitHub : https://github.com/KylianRIBEROU/TD_NOTE_VUEJS
+
 Notre application est une application Client/Serveur de quizz où l'on peut visionner l'ensemble des questionnaires avec leurs questions. On peut répondre à une question. De plus, nous avons respecté le CRUD, c'est-à-dire la modification, la suppression et l'ajout. Ainsi, nous pouvons modifier un questionnaire (son nom), une question spécifique (nom, choix et bonne réponse). Nous pouvons supprimer une question spécifique ou un question complet. Puis, nous pouvons ajouter un questionnaire complet ou uniquement une question spécifique à un questionnaire. De plus, nous avons géré les erreurs possibles. En effet, par exemple, lors de la modification d'une question, si l'on change la bonne réponse parmi les choix possibles sans modifier directement la bonne réponse, cela nous affiche une erreur.
 
 ## Lancement de notre projet
