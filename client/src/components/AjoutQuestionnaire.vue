@@ -7,7 +7,12 @@
 
     <!-- Affichage des questions déjà créées -->
     <div v-for="(question, index) in questions" :key="index" class="question">
-      <span>{{ question }}</span>
+      <span>{{ question.label }} : </span>
+      <span v-for="(choice, cIndex) in question.choices" :key="cIndex">
+        <input type="radio" :id="'choice' + cIndex" :value="cIndex" v-model="question.selectedChoice">
+        <label :for="'choice' + cIndex">{{ choice }}</label>
+      </span>
+      <i class="fas fa-times delete-icon" @click="deleteQuestion(index)"></i>
     </div>
 
     <!-- Bouton "Ajouter une question" -->
@@ -22,6 +27,9 @@
         <input type="radio" id="fourChoices" value="fourChoices" v-model="questionType" class="radio-input">
         <label for="fourChoices" class="radio-label">Questionnaire à 4 réponses</label>
       </div>
+
+      <label for="questionLabel" class="label">Libellé de la question :</label>
+      <input type="text" id="questionLabel" v-model="questionLabel" class="input">
 
       <div v-if="questionType === 'twoChoices'" class="choices">
         <label for="choice1" class="label">Choix 1 :</label>
@@ -42,26 +50,28 @@
       </div>
 
       <!-- Bouton "Créer" pour ajouter la question -->
-      <button class="create-question-btn" @click="addQuestion">Créer</button>
+      <button class="create-question-btn" @click="addQuestion">ajouter la question</button>
     </div>
 
     <!-- Bouton "Créer" -->
-    <button class="create-btn" @click="createQuestionnaire">Créer</button>
+    <button class="create-btn" @click="createQuestionnaire">Créer le questionnaire</button>
   </div>
 </template>
 
 <script>
+
+import axios from 'axios';
+
 export default {
   data() {
     return {
       nomQuestionnaire: '',
       questionType: 'twoChoices',
-      choices: [
-        { value: '' },
-        { value: '' },
-        { value: '' },
-        { value: '' }
-      ], // Initialisation de 4 choix pour les questionnaires à 4 réponses
+      questionLabel: '',
+      choice1: '',
+      choice2: '',
+      choice3: '',
+      choice4: '',
       questions: [], // Liste des questions déjà créées
       showAddQuestion: false // Contrôle l'affichage de la div pour ajouter une nouvelle question
     };
@@ -69,41 +79,76 @@ export default {
   
   methods: {
     createQuestionnaire() {
-      // Envoyer une requête POST à l'API avec les données du questionnaire
+      if (!this.nomQuestionnaire.trim()) {
+        alert("Veuillez entrer un nom pour le questionnaire.");
+        return;
+      }
+
+      if (this.questions.length === 0) {
+        alert("Veuillez ajouter au moins une question au questionnaire.");
+        return;
+      }
+
       const questionnaireData = {
         name: this.nomQuestionnaire,
-        questions: this.questions // Inclure toutes les questions dans les données du questionnaire
+        questions: this.questions.map(question => {
+          return {
+            title: question.label,
+            type: question.choices.length === 2 ? "question_simple" : "question_multiple",
+            // Supposons que la première réponse soit toujours la bonne réponse
+            answer: 0,
+            // Supposons également que les choix soient toujours dans l'ordre
+            first_choice: question.choices[0],
+            second_choice: question.choices[1],
+            third_choice: question.choices[2] || null,
+            fourth_choice: question.choices[3] || null
+          };
+        })
       };
-      // Exemple d'envoi de la requête POST (adapté à votre configuration)
-      // axios.post('/flaskapi/v1.0/questionnaires', questionnaireData)
-      //   .then(response => {
-      //     console.log(response.data);
-      //     // Rediriger ou faire d'autres actions après la création réussie
-      //   })
-      //   .catch(error => {
-      //     console.error(error);
-      //   });
+
+      axios.post("http://localhost:5000/flaskapi/v1.0/questionnairequestions", questionnaireData)
+        .then(response => {
+          console.log(response.data);
+          console.log("Questionnaire créé avec succès !");
+          this.resetFields();
+          // Redirection ou autres actions après la création réussie
+        })
+        .catch(error => {
+          console.error(error);
+        });
     },
+
     toggleAddQuestion() {
-      this.showAddQuestion = !this.showAddQuestion; // Inverser l'état de l'affichage de la div pour ajouter une nouvelle question
+      this.showAddQuestion = !this.showAddQuestion; 
     },
+    
     addQuestion() {
-      // Construire la question en fonction du type choisi
-      let newQuestion = '';
-      if (this.questionType === 'twoChoices') {
-        newQuestion = `Question avec 2 choix : ${this.choice1} et ${this.choice2}`;
-      } else if (this.questionType === 'fourChoices') {
-        newQuestion = `Question avec 4 choix : ${this.choice1}, ${this.choice2}, ${this.choice3} et ${this.choice4}`;
+      if (this.questionType === 'twoChoices' && (!this.choice1.trim() || !this.choice2.trim())) {
+        alert("Veuillez entrer tous les choix.");
+        return;
+      } else if (this.questionType === 'fourChoices' && (!this.choice1.trim() || !this.choice2.trim() || !this.choice3.trim() || !this.choice4.trim())) {
+        alert("Veuillez entrer tous les choix.");
+        return;
+      }      if (!this.questionLabel.trim()) {
+        alert("Veuillez entrer un libellé pour la question.");
+        return;
       }
-      // Ajouter la question à la liste des questions
+      // Construire la question en fonction du type choisi
+      let newQuestion = {
+        label: this.questionLabel,
+        choices: [this.choice1, this.choice2, this.choice3, this.choice4].filter(choice => choice.trim() !== ''), // Filtrer les choix vides
+        selectedChoice: null // Initialiser la réponse sélectionnée à null
+      };
       this.questions.push(newQuestion);
-      // Réinitialiser les champs de choix
-      this.resetChoices();
-      // Cacher la div pour ajouter une nouvelle question
+      this.resetFields();
       this.showAddQuestion = false;
     },
-    resetChoices() {
-      // Réinitialiser les valeurs des choix
+    deleteQuestion(index) {
+      this.questions.splice(index, 1); // Supprimer la question à l'index spécifié
+    },
+    resetFields() {
+      // Réinitialiser les valeurs des champs
+      this.questionLabel = '';
       this.choice1 = '';
       this.choice2 = '';
       this.choice3 = '';
@@ -112,8 +157,15 @@ export default {
   }
 };
 </script>
-  
-  <style scoped>
+
+<style scoped>
+
+.delete-icon {
+  margin-left: 10px; /* Ajout de marge entre la question et l'icône de croix */
+  cursor: pointer;
+  color: red; /* Couleur de l'icône de croix */
+}
+
   .ajout-questionnaire {
     padding: 20px;
     border: 1px solid #ccc;
