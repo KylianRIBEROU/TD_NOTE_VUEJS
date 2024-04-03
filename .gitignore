@@ -1,4 +1,4 @@
 .env
 venv
-*.pyc
-__pycache__
+./serveur/*.pyc
+./serveur/__pycache__

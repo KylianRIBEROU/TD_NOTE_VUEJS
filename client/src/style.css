@@ -1,125 +1,257 @@
+/* site en général (page App.vue notamment) */
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .conteneur-questionnaire{
-  border : 1px solid #000;
-  border-radius: 10px;
-  padding: 1em;
-  margin:1em;
-}
-
-.left-pane{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+    border : 1px solid #000;
+    border-radius: 10px;
+    padding: 1em;
+    margin:1em;
 }
 
 .conteneur-question {
-  margin-bottom: 2em;
+    margin-bottom: 2em;
 }
 
 .questionnaire-header {
-  padding-bottom:1em;
-  margin-bottom: 1em;
-  border-bottom: 1px solid black;
+    padding-bottom:1em;
+    margin-bottom: 1em;
+    border-bottom: 1px solid black;
 }
 
 a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+    font-weight: 500;
+    color: #646cff;
+    text-decoration: inherit;
 }
+
 a:hover {
-  color: #535bf2;
+    color: #535bf2;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  justify-content: space-evenly;
-  min-width: 320px;
-  min-height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: space-evenly;
+    min-width: 320px;
+    min-height: 100vh;
 }
 
 #app {
-  max-width: 1280px;
-  margin: 0;
-  padding: 2rem;
+    max-width: 1280px;
+    margin: 0;
+    padding: 2rem;
 }
 
-button {
-  margin:0.2em;
-}
 .div-choix {
-  display: flex;
-  flex-direction: column;
-
-
+    display: flex;
+    flex-direction: column;
 }
+
 input {
-  margin:0.2em;
-  border-radius: 5px;
+    margin:0.2em;
+    border-radius: 5px;
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+    font-size: 3.2em;
+    line-height: 1.1;
+    margin-bottom: 50px;
+}
+
+.container {
+    display: flex;
 }
 
 .left-pane {
-  margin-right: 5em;
-  padding-right: 5em;
-  border-right : 1px solid #000;
+    margin-right: 5em;
+    padding-right: 5em;
+    border-right : 1px solid #000;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
+.right-pane{
+    flex: 1;
+}
 
+.logo {
+	height: 6em;
+	padding: 1.5em;
+	will-change: filter;
+	transition: filter 300ms;
+	}
+
+.logo:hover {
+	filter: drop-shadow(0 0 2em #646cffaa);
+}
+	
+.logo.vue:hover {
+	filter: drop-shadow(0 0 2em #42b883aa);
+}
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #1a1a1a;
+    cursor: pointer;
+    transition: border-color 0.25s;
+    margin:0.2em;
 }
+
 button:hover {
-  border-color: #646cff;
+    border-color: #646cff;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+
+button:focus, button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
 }
 
 .card {
-  padding: 2em;
+    padding: 2em;
 }
 
 
 @media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
+    :root {
+        color: #213547;
+        background-color: #ffffff;
+    }
+    a:hover {
+        color: #747bff;
+    }
+    button {
+        background-color: #f9f9f9;
+    }
+}
+
+
+/* page d'une Question */
+.question-header {
+    display: flex;
+    align-items: center;
+}
+
+.edit-icon {
+    margin-left: 10px;
+    cursor: pointer;
+    background-color: #ff5000;
+    color: #ffffff;
+}
+
+.input-large {
+    width: 100%;
+}
+
+.input-medium {
+    width: 50%;
+}
+
+
+/* page d'un AjoutQuestionnaire */
+.delete-icon {
+    margin-left: 10px; 
+    cursor: pointer;
+    color: red;
+}
+
+.ajout-questionnaire {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
     background-color: #f9f9f9;
-  }
+}
+
+.title {
+    margin-bottom: 15px;
+}
+
+.radio-options {
+    margin-bottom: 15px;
+}
+
+.radio-label {
+    margin-right: 10px;
+}
+
+.radio-input {
+    margin-right: 5px;
+}
+
+.choices label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.choices input {
+    margin-bottom: 10px;
+}
+
+.create-btn, .add-question-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;    
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.create-btn:hover, .add-question-btn:hover {
+    background-color: #0056b3;
+}
+
+.add-question-container {
+    margin-top: 20px;
+}
+
+.create-question-btn {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.create-question-btn:hover {
+    background-color: #218838;
+}
+
+/* page d'un Questionnaire */
+h3 {
+    text-decoration: underline;
+}
+
+.toggle-details-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+  
+.toggle-details-btn img {
+    width: 30px;
+	height: 30px;
 }
