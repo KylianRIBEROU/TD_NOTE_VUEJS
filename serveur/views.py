@@ -12,7 +12,8 @@ def make_public_questionnaire(questionnaire):
             new_questionnaire[field] = questionnaire_json[field]
     return new_questionnaire
 
-# -- questions --
+# -------------------------- Questions --------------------------
+
 @app.route("/flaskapi/v1.0/questions", methods=["GET"])
 def get_questions():
     questions = db.session.query(Question).all()
@@ -106,7 +107,6 @@ def delete_question(question_id):
     db.session.commit()
     return jsonify({"result": True})
 
-# delete questions by questionnaire_id
 @app.route("/flaskapi/v1.0/questions/questionnaire/<int:questionnaire_id>", methods=["DELETE"])
 def delete_questions(questionnaire_id):
     questions = db.session.query(Question).filter(Question.questionnaire_id == questionnaire_id).all()
@@ -189,12 +189,12 @@ def creer_questionnaire_et_questions():
             abort(400)
 
         if q["type"] == "questionsimple":
-            question = QuestionSimple(q["title"], q["answer"], q["type"], q["first_answer"], q["second_answer"],  questionnaire.id)
+            question = QuestionSimple(q["title"], q["answer"], q["type"], q["first_answer"], q["second_answer"], questionnaire.id)
         elif q["type"] == "questionmultiple":
             question = QuestionMultiple(q["title"], q["answer"], q["type"],
-                                        q["first_answer"], q["second_answer"], q["third_answer"], q["fourth_answer"],  questionnaire.id,)
+                                        q["first_answer"], q["second_answer"], q["third_answer"], q["fourth_answer"], questionnaire.id)
         else:
-            abort(400)  # Type de question non pris efFn charge
+            abort(400)
 
         db.session.add(question)
         db.session.commit()
